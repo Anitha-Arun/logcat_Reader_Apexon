@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Logcat File</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { color: #333; }
+        .upload-box { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type="file"] { margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Upload Your Logcat File</h1>
+    <div class="upload-box">
+        <form method="post" enctype="multipart/form-data">
+            <p>Select your log file (e.g., A60_log.txt):</p>
+            <input type="file" name="file">
+            <button type="submit">Analyze Logs</button>
+        </form>
+    </div>
+</body>
+</html>

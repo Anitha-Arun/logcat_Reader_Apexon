@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logcat Summary Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1, h2, h3 { color: #333; }
+        .section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .version-entry { margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ddd; }
+        .version-entry:last-child { border-bottom: none; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin: 5px 0; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .version-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .version-item { margin: 5px 0; }
+        .version-label { font-weight: bold; color: #555; }
+        .version-value { color: #333; }
+        .version-value.unknown { color: #888; font-style: italic; }
+        .timestamps { margin-top: 10px; }
+        .timestamps ul { padding-left: 20px; list-style-type: disc; }
+        .firmware-type { font-style: italic; color: #4CAF50; margin-top: 10px; }
+        .id-list ul { padding-left: 20px; list-style-type: disc; }
+    </style>
+</head>
+<body>
+    <h1>Logcat Summary Report</h1>
+    <p><a href="/">Upload Another File</a></p>
+
+    <div class="section">
+        <h2>General Statistics</h2>
+        <p>Total Lines: {{ summary.total_lines }}</p>
+        <p>Errors: {{ summary.errors|length }}</p>
+        <p>Warnings: {{ summary.warnings|length }}</p>
+        <p>Info Messages: {{ summary.info_count }}</p>
+        {% if summary.boot_time %}
+            <p>Boot Time: {{ summary.boot_time }}</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>Device Information</h2>
+        {% if summary.device_info.model %}<p>Model: {{ summary.device_info.model }}</p>{% endif %}
+        {% if summary.device_info.manufacturer %}<p>Manufacturer: {{ summary.device_info.manufacturer }}</p>{% endif %}
+        {% if summary.device_info.serial %}<p>Serial: {{ summary.device_info.serial }}</p>{% endif %}
+        {% if summary.device_info.flavor %}<p>Flavor: {{ summary.device_info.flavor }}</p>{% endif %}
+        {% if summary.device_info.user_type %}<p>User Type: {{ summary.device_info.user_type }}</p>{% endif %}
+        <div class="id-list">
+            <p><strong>Device IDs ({{ summary.device_info.device_ids|length }} occurrences):</strong></p>
+            <ul>
+                {% for device_id in summary.device_info.device_ids %}
+                    <li>{{ device_id.timestamp }} - {{ device_id.id }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="id-list">
+            <p><strong>Teams IDs ({{ summary.device_info.teams_ids|length }} occurrences):</strong></p>
+            <ul>
+                {% for teams_id in summary.device_info.teams_ids %}
+                    <li>{{ teams_id.timestamp }} - {{ teams_id.id }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Software Versions</h2>
+        {% for version_entry in summary.device_info.software_versions %}
+            <div class="version-entry">
+                <div class="version-grid">
+                    <div class="version-item">
+                        <span class="version-label">OS Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('firmware_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("firmware_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">OS Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('firmware_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("firmware_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Teams Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('teamsApp_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("teamsApp_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Teams Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('teamsApp_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("teamsApp_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Admin Agent Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('adminAgent_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("adminAgent_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Admin Agent Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('adminAgent_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("adminAgent_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Company Portal Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('companyPortal_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("companyPortal_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Company Portal Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('companyPortal_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("companyPortal_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">OEM Agent Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('partnerAgent_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("partnerAgent_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">OEM Agent Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('partnerAgent_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("partnerAgent_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version estágio-item">
+                        <span class="version-label">NGMS App Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('ngmsApp_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("ngmsApp_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">NGMS App Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('ngmsApp_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("ngmsApp_code", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Authenticator App Version Name:</span>
+                        <span class="version-value {% if version_entry.versions.get('authenticatorApp_name') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("authenticatorApp_name", "Unknown") }}
+                        </span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">Authenticator App Version Code:</span>
+                        <span class="version-value {% if version_entry.versions.get('authenticatorApp_code') == 'Unknown' %}unknown{% endif %}">
+                            {{ version_entry.versions.get("authenticatorApp_code", "Unknown") }}
+                        </span>
+                    </div>
+                </div>
+                <div class="timestamps">
+                    <p><strong>Timestamps ({{ version_entry.timestamps|length }} occurrences):</strong></p>
+                    <ul>
+                        {% for ts in version_entry.timestamps %}
+                            <li>{{ ts }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="firmware-type">
+                    {{ version_entry.firmware_type }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Sign-In History</h2>
+        <ul>
+        {% for sign_in in summary.device_info.sign_in_history %}
+            <li>{{ sign_in.timestamp }} - State: {{ sign_in.state }}, User ID: {{ sign_in.user_id }}, Time: {{ unix_to_readable(sign_in.unix_timestamp) }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>MAC Addresses</h2>
+        {% for mac_entry in summary.device_info.mac_addresses %}
+            <p>{{ mac_entry.timestamp }}:</p>
+            <ul>
+            {% for mac in mac_entry.mac_list %}
+                <li>{{ mac.interface_type }}: {{ mac.mac_address }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>IP Addresses</h2>
+        <ul>
+        {% for ip in summary.device_info.ip_address %}
+            <li>{{ ip.timestamp }} - {{ ip.ip }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Analyzed Logs</h2>
+        {% for log, analysis in analyzed_logs %}
+            <div class="section">
+                <h3>{{ log.timestamp }} - {{ log.tag }} ({{ analysis.type }})</h3>
+                <p>{{ log }}</p>
+                <p><strong>Description:</strong> {{ analysis.description }}</p>
+                <p><strong>Details:</strong></p>
+                <ul>
+                {% for detail in analysis.details %}
+                    <li>{{ detail }}</li>
+                {% endfor %}
+                </ul>
+                <p><strong>Insights:</strong></p>
+                <ul>
+                {% for insight in analysis.insights %}
+                    <li>{{ insight }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
