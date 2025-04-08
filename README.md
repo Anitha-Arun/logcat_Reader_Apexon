@@ -1,7 +1,7 @@
 
 
 
-```markdown
+
 # 📱 Logcat_Reader_Apexon
 
 **Logcat_Reader_Apexon** is a powerful Flask-based web tool that parses and analyzes Android `logcat` logs. It extracts structured insights such as device metadata, software versions, IP/MAC addresses, and sign-in activity — all presented in a clean, human-readable format.
